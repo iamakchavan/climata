@@ -3,7 +3,7 @@ export interface WeatherData {
   latitude: number;
   longitude: number;
   timezone: string;
-  current: {
+  current?: {
     time: string;
     temperature_2m: number;
     relative_humidity_2m: number;
@@ -13,6 +13,15 @@ export interface WeatherData {
     weather_code: number;
     wind_speed_10m: number;
     wind_direction_10m: number;
+  };
+  hourly?: {
+    time: string[];
+    temperature_2m: string[];
+    rain: string[];
+    snowfall: string[];
+    showers: string[];
+    precipitation: string[];
+    relative_humidity_2m: string[];
   };
   daily: {
     time: string[];
