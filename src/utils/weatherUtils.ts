@@ -1,6 +1,6 @@
 
 import { WeatherCodeInfo } from "@/types/weather";
-import { Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSnow, Sun, SunCloud } from "lucide-react";
+import { Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSnow, Sun, CloudSun } from "lucide-react";
 
 export const getWeatherIcon = (code: number) => {
   // WMO Weather interpretation codes (WW)
@@ -10,7 +10,7 @@ export const getWeatherIcon = (code: number) => {
       return Sun;
     // Partly cloudy
     case code === 1 || code === 2:
-      return SunCloud;
+      return CloudSun;
     // Cloudy, Overcast
     case code === 3:
       return Cloud;
