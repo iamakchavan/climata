@@ -99,6 +99,6 @@
   
   .weather-background {
     @apply bg-cover bg-center bg-no-repeat min-h-screen;
-    background-image: url('/lovable-uploads/a6004515-83e4-4205-b175-7889548bb2d5.png');
+    background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2274&q=80');
   }
 }
