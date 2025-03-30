@@ -50,29 +50,29 @@ const SearchBar = ({ onLocationSelect }: SearchBarProps) => {
   };
 
   return (
-    <div className="relative w-full max-w-md">
-      <div className="relative">
+    <div className="relative">
+      <div className="relative glass-panel">
         <Input
           type="text"
-          placeholder="Search for a city..."
+          placeholder="Search location..."
           value={query}
           onChange={(e) => handleSearch(e.target.value)}
-          className="pl-10 pr-4 py-2 w-full"
+          className="bg-transparent border-0 focus-visible:ring-0 text-white placeholder:text-white/60 h-10 px-10"
           onFocus={() => results.length > 0 && setIsOpen(true)}
         />
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/70" size={16} />
       </div>
       
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-60 overflow-auto">
+        <div className="absolute z-10 mt-1 w-full glass-panel">
           {isLoading ? (
-            <div className="p-4 text-center text-sm text-gray-500">Loading...</div>
+            <div className="p-3 text-center text-sm text-white/70">Loading...</div>
           ) : results.length > 0 ? (
-            <ul>
+            <ul className="max-h-48 overflow-auto py-1">
               {results.map((location) => (
                 <li 
                   key={`${location.id}-${location.name}`}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                  className="px-4 py-2 hover:bg-white/10 cursor-pointer text-sm text-white"
                   onClick={() => handleSelectLocation(location)}
                 >
                   {location.name}
@@ -81,7 +81,7 @@ const SearchBar = ({ onLocationSelect }: SearchBarProps) => {
               ))}
             </ul>
           ) : query.length >= 2 ? (
-            <div className="p-4 text-center text-sm text-gray-500">No locations found</div>
+            <div className="p-3 text-center text-sm text-white/70">No locations found</div>
           ) : null}
         </div>
       )}

@@ -14,13 +14,12 @@ const ForecastCard = ({ date, maxTemp, minTemp, weatherCode, isToday = false }: 
   const WeatherIcon = getWeatherIcon(weatherCode);
   
   return (
-    <div className="rounded-lg shadow-sm bg-white p-4 hover:shadow-md transition-shadow flex flex-col items-center animate-fade-in">
-      <p className="font-medium text-gray-700 mb-1">{isToday ? 'Today' : formatDate(date)}</p>
-      <WeatherIcon className="my-2 text-gray-700" size={32} />
-      <p className="text-xs text-gray-600 mb-2">{weather.description}</p>
-      <div className="flex justify-between w-full">
-        <span className="text-sm font-bold text-gray-900">{formatTemperature(maxTemp)}</span>
-        <span className="text-sm text-gray-500">{formatTemperature(minTemp)}</span>
+    <div className="flex flex-col items-center">
+      <p className="font-medium text-sm mb-2">{isToday ? 'Today' : formatDate(date)}</p>
+      <WeatherIcon className="mb-2" size={24} />
+      <div className="flex flex-col items-center">
+        <span className="text-sm font-bold">{formatTemperature(maxTemp)}</span>
+        <span className="text-xs text-white/70">{formatTemperature(minTemp)}</span>
       </div>
     </div>
   );

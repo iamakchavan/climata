@@ -8,7 +8,7 @@ import CurrentWeather from "@/components/CurrentWeather";
 import WeatherForecast from "@/components/WeatherForecast";
 import WeatherPlaceholder from "@/components/WeatherPlaceholder";
 import { Loader2 } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const DEFAULT_LOCATION = {
   id: 1,
@@ -56,36 +56,32 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 pb-12">
-      <div className="container max-w-4xl px-4 py-8">
-        <header className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tighter mb-2">
-            ClimaTracker
-          </h1>
-          <p className="text-muted-foreground mb-6">Simple, elegant weather forecasts</p>
-          <div className="flex justify-center mb-6">
-            <SearchBar onLocationSelect={handleLocationSelect} />
+    <div className="weather-background">
+      <div className="container max-w-lg px-4 py-8 mx-auto">
+        <header className="flex items-center justify-between mb-6">
+          <div className="flex-1" />
+          <SearchBar onLocationSelect={handleLocationSelect} />
+          <div className="flex-1 flex justify-end">
+            <ThemeToggle />
           </div>
         </header>
 
-        <main>
+        <main className="mt-12">
           {isLoading ? (
             <div className="flex items-center justify-center p-12">
-              <Loader2 className="h-8 w-8 text-primary animate-spin" />
+              <Loader2 className="h-8 w-8 text-white animate-spin" />
             </div>
           ) : weatherData && location ? (
-            <Card className="rounded-xl shadow-sm border-0 overflow-hidden">
-              <div className="animate-fade-in">
-                <CurrentWeather data={weatherData} locationName={location.name} />
-                <WeatherForecast data={weatherData} />
-              </div>
-            </Card>
+            <div className="animate-fade-in">
+              <CurrentWeather data={weatherData} locationName={location.name} />
+              <WeatherForecast data={weatherData} />
+            </div>
           ) : (
             <WeatherPlaceholder />
           )}
         </main>
 
-        <footer className="mt-12 text-center text-sm text-muted-foreground">
+        <footer className="mt-20 text-center text-sm text-white/70">
           <p>Powered by Open-Meteo API • {new Date().getFullYear()}</p>
         </footer>
       </div>

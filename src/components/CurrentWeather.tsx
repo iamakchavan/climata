@@ -1,7 +1,7 @@
 
 import { WeatherData } from "@/types/weather";
 import { formatTemperature, getWeatherDescription, getWeatherIcon, getWindDirection } from "@/utils/weatherUtils";
-import { Droplets, Thermometer, Wind } from "lucide-react";
+import { Droplets, Thermometer, Wind, Cloud, Umbrella, SunMedium } from "lucide-react";
 
 interface CurrentWeatherProps {
   data: WeatherData;
@@ -13,59 +13,68 @@ const CurrentWeather = ({ data, locationName }: CurrentWeatherProps) => {
   const weather = getWeatherDescription(current.weather_code);
   const WeatherIcon = getWeatherIcon(current.weather_code);
   
-  // Apply animation classes based on weather
-  const getWeatherClass = () => {
-    switch (weather.icon) {
-      case 'sunny':
-        return 'bg-gradient-to-br from-weather-blue-light to-white';
-      case 'partly-cloudy':
-        return 'bg-gradient-to-br from-weather-blue-light to-white';
-      case 'cloudy':
-        return 'bg-gradient-to-br from-weather-cloudy/30 to-white';
-      case 'rainy':
-        return 'bg-gradient-to-br from-weather-rainy/30 to-white';
-      case 'snowy':
-        return 'bg-gradient-to-br from-weather-snowy to-white';
-      case 'stormy':
-        return 'bg-gradient-to-br from-weather-stormy/30 to-white';
-      default:
-        return 'bg-gradient-to-br from-weather-blue-light to-white';
-    }
+  // Format coordinates for display
+  const formatCoordinates = (lat: number, lon: number) => {
+    const latDir = lat >= 0 ? "N" : "S";
+    const lonDir = lon >= 0 ? "E" : "W";
+    return `${Math.abs(lat).toFixed(1)}° ${latDir} ${Math.abs(lon).toFixed(1)}° ${lonDir}`;
+  };
+  
+  // Format current time
+  const formatTime = () => {
+    const now = new Date();
+    return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
-    <div className={`rounded-xl shadow-md overflow-hidden ${getWeatherClass()} animate-fade-in`}>
-      <div className="p-6">
-        <div className="flex justify-between items-start">
+    <div className="glass-card rounded-3xl overflow-hidden mb-6">
+      <div className="p-6 text-white">
+        <div className="flex justify-between items-start mb-6">
           <div>
-            <h2 className="text-3xl font-bold text-gray-800">{locationName}</h2>
-            <p className="text-gray-600 mt-1">{weather.description}</p>
+            <h1 className="text-3xl font-bold mb-1">{locationName}</h1>
+            <p className="text-white/80 text-sm">
+              {formatCoordinates(data.latitude, data.longitude)} • {formatTime()}
+            </p>
           </div>
-          <div className="flex flex-col items-center">
-            <WeatherIcon size={48} className="text-gray-700" />
+          <div className="text-right">
+            <div className="text-5xl font-bold">{formatTemperature(current.temperature_2m)}</div>
+            <p className="text-white/80 text-sm">Feels like {formatTemperature(current.apparent_temperature)}</p>
           </div>
         </div>
         
-        <div className="mt-6">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col items-center">
-              <Thermometer className="text-gray-600 mb-1" size={24} />
-              <p className="text-4xl font-bold text-gray-800">{formatTemperature(current.temperature_2m)}</p>
-              <p className="text-sm text-gray-600">Feels like {formatTemperature(current.apparent_temperature)}</p>
-            </div>
-            
-            <div className="flex flex-col items-center">
-              <Droplets className="text-weather-rainy mb-1" size={24} />
-              <p className="text-xl font-medium text-gray-800">{current.relative_humidity_2m}%</p>
-              <p className="text-sm text-gray-600">Humidity</p>
-            </div>
-            
-            <div className="flex flex-col items-center">
-              <Wind className="text-gray-600 mb-1" size={24} />
-              <p className="text-xl font-medium text-gray-800">{Math.round(current.wind_speed_10m)} km/h</p>
-              <p className="text-sm text-gray-600">{getWindDirection(current.wind_direction_10m)}</p>
-            </div>
+        <div className="flex items-center mb-6">
+          <WeatherIcon className="mr-2" size={24} />
+          <span className="text-lg">{weather.description}</span>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-3">
+          <div className="glass-panel p-4 flex flex-col items-center">
+            <Wind className="mb-1 text-white/80" size={20} />
+            <p className="text-lg font-medium">{Math.round(current.wind_speed_10m)} km/h</p>
+            <p className="text-xs text-white/70">{getWindDirection(current.wind_direction_10m)}</p>
           </div>
+          
+          <div className="glass-panel p-4 flex flex-col items-center">
+            <Droplets className="mb-1 text-white/80" size={20} />
+            <p className="text-lg font-medium">{current.relative_humidity_2m}%</p>
+            <p className="text-xs text-white/70">Humidity</p>
+          </div>
+          
+          <div className="glass-panel p-4 flex flex-col items-center">
+            <Umbrella className="mb-1 text-white/80" size={20} />
+            <p className="text-lg font-medium">{Math.round(current.precipitation * 100)}%</p>
+            <p className="text-xs text-white/70">Precipitation</p>
+          </div>
+          
+          <div className="glass-panel p-4 flex flex-col items-center">
+            <SunMedium className="mb-1 text-white/80" size={20} />
+            <p className="text-lg font-medium">Low</p>
+            <p className="text-xs text-white/70">UV Index</p>
+          </div>
+        </div>
+        
+        <div className="mt-6 text-sm text-white/70 text-center">
+          <p>This scene captures the calm serenity of a {weather.description.toLowerCase()} day with a gentle breeze.</p>
         </div>
       </div>
     </div>
