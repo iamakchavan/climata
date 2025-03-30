@@ -15,7 +15,7 @@ const ForecastCard = ({ date, maxTemp, minTemp, weatherCode, isToday = false }: 
   
   return (
     <div className="flex flex-col items-center py-2 transition-transform hover:scale-105">
-      <p className={`font-medium text-sm mb-2 ${isToday ? 'bg-white/20 px-3 py-0.5 rounded-full' : ''}`}>
+      <p className={`font-medium text-sm mb-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-full ${isToday ? 'bg-white/20 px-3 py-0.5 rounded-full' : ''}`}>
         {isToday ? 'Today' : formatDate(date)}
       </p>
       <div className="bg-white/10 rounded-full w-12 h-12 flex items-center justify-center mb-3">
