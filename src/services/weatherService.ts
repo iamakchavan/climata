@@ -1,4 +1,3 @@
-
 import { LocationData, WeatherData } from "@/types/weather";
 
 const OPEN_METEO_BASE_URL = "https://api.open-meteo.com/v1";
@@ -47,25 +46,82 @@ export const searchLocations = async (query: string): Promise<LocationData[]> =>
 
 export const reverseGeocode = async (latitude: number, longitude: number): Promise<LocationData | null> => {
   try {
-    // Instead of using reverse geocoding directly (which requires a name parameter),
-    // We'll use a nearby location search approach
-    // This will find the closest named location to the given coordinates
-    const url = `${GEO_BASE_URL}/search?latitude=${latitude}&longitude=${longitude}&count=1&format=json`;
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
     
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'Accept-Language': 'en-US,en;q=0.9',
+        'User-Agent': 'Climata Weather App'
+      }
+    });
+    
     if (!response.ok) {
       throw new Error("Failed to reverse geocode");
     }
     
     const data = await response.json();
-    if (data.results && data.results.length > 0) {
-      return data.results[0];
+    
+    if (data.address) {
+      // Try to get the most specific location name possible
+      let locationName = data.address.city || 
+                        data.address.town || 
+                        data.address.village || 
+                        data.address.suburb ||
+                        data.address.neighbourhood ||
+                        data.address.county ||
+                        data.address.state ||
+                        data.address.country;
+
+      // If we have multiple parts, combine them for better context
+      if (data.address.city || data.address.town || data.address.village) {
+        if (data.address.state) {
+          locationName = `${locationName}, ${data.address.state}`;
+        } else if (data.address.country) {
+          locationName = `${locationName}, ${data.address.country}`;
+        }
+      }
+
+      return {
+        id: Date.now(),
+        name: locationName,
+        latitude: parseFloat(data.lat),
+        longitude: parseFloat(data.lon),
+        country: data.address.country,
+        admin1: data.address.state
+      };
     }
     
-    // If no results found, create a basic location with coordinates
+    // If we still don't have a location name, try a second API call with different parameters
+    const backupUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`;
+    const backupResponse = await fetch(backupUrl, {
+      headers: {
+        'Accept-Language': 'en-US,en;q=0.9',
+        'User-Agent': 'Climata Weather App'
+      }
+    });
+    
+    if (backupResponse.ok) {
+      const backupData = await backupResponse.json();
+      if (backupData.address) {
+        const locationName = backupData.address.state || 
+                           backupData.address.country || 
+                           `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
+        
+        return {
+          id: Date.now(),
+          name: locationName,
+          latitude: parseFloat(backupData.lat),
+          longitude: parseFloat(backupData.lon),
+          country: backupData.address.country,
+          admin1: backupData.address.state
+        };
+      }
+    }
+    
+    // If all else fails, use coordinates as the name
     return {
       id: Date.now(),
-      name: "Current Location",
+      name: `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`,
       latitude,
       longitude
     };

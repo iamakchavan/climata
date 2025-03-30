@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { LocationData, WeatherData } from "@/types/weather";
@@ -22,6 +21,7 @@ const Index = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [locationPermission, setLocationPermission] = useState<PermissionState | null>(null);
   const { toast } = useToast();
 
   // Load weather data for the selected location
@@ -45,12 +45,33 @@ const Index = () => {
     }
   };
 
+  // Check and request location permission
+  const checkLocationPermission = async () => {
+    try {
+      const permissionStatus = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
+      setLocationPermission(permissionStatus.state);
+
+      // Listen for permission changes
+      permissionStatus.addEventListener('change', () => {
+        setLocationPermission(permissionStatus.state);
+        if (permissionStatus.state === 'granted') {
+          getUserLocation();
+        }
+      });
+
+      return permissionStatus.state;
+    } catch (error) {
+      console.error('Error checking location permission:', error);
+      return 'denied';
+    }
+  };
+
   // Get user's current location
   const getUserLocation = () => {
     if (!navigator.geolocation) {
       toast({
-        title: "Error",
-        description: "Geolocation is not supported by your browser",
+        title: "Browser Support Required",
+        description: "Your browser doesn't support geolocation. Please search for a location manually.",
         variant: "destructive"
       });
       loadWeatherData(DEFAULT_LOCATION);
@@ -58,47 +79,45 @@ const Index = () => {
     }
 
     setIsGettingLocation(true);
-    
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
           const { latitude, longitude } = position.coords;
-          // Try to get the location name from coordinates
           const locationData = await reverseGeocode(latitude, longitude);
           
           if (locationData) {
             loadWeatherData(locationData);
           } else {
-            // If reverse geocoding fails, create a location with coordinates
-            loadWeatherData({
-              id: Date.now(),
-              name: "Current Location",
-              latitude,
-              longitude
-            });
+            throw new Error("Could not determine location name");
           }
         } catch (error) {
           console.error("Error getting location:", error);
           toast({
-            title: "Error",
-            description: "Failed to determine your location. Using default location instead.",
+            title: "Location Error",
+            description: "Couldn't determine your location name. Using coordinates instead.",
             variant: "destructive"
           });
-          loadWeatherData(DEFAULT_LOCATION);
+          loadWeatherData({
+            id: Date.now(),
+            name: "Current Location",
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
         } finally {
           setIsGettingLocation(false);
         }
       },
       (error) => {
         console.error("Geolocation error:", error);
-        let message = "Failed to get your location. Using default location instead.";
+        let message = "Couldn't get your location. Using default location instead.";
         
         if (error.code === 1) {
           message = "Location access denied. Please enable location services for this site.";
         } else if (error.code === 2) {
-          message = "Your location is currently unavailable. Using default location instead.";
+          message = "Location service is unavailable. Please check your device settings.";
         } else if (error.code === 3) {
-          message = "Location request timed out. Using default location instead.";
+          message = "Location request timed out. Please try again.";
         }
         
         toast({
@@ -118,9 +137,28 @@ const Index = () => {
     );
   };
 
-  // Load user's location on first mount
+  // Initialize location services
   useEffect(() => {
-    getUserLocation();
+    const initializeLocation = async () => {
+      const permissionState = await checkLocationPermission();
+      
+      if (permissionState === 'granted') {
+        getUserLocation();
+      } else if (permissionState === 'prompt') {
+        // Show a toast to inform the user about location access
+        toast({
+          title: "Location Access",
+          description: "Please allow location access to get weather for your current location.",
+          duration: 5000
+        });
+        getUserLocation(); // This will trigger the browser's permission prompt
+      } else {
+        // Permission denied, use default location
+        loadWeatherData(DEFAULT_LOCATION);
+      }
+    };
+
+    initializeLocation();
   }, []);
 
   // Handle location selection from search
