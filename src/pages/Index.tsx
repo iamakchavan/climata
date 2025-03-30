@@ -8,7 +8,6 @@ import CurrentWeather from "@/components/CurrentWeather";
 import WeatherForecast from "@/components/WeatherForecast";
 import WeatherPlaceholder from "@/components/WeatherPlaceholder";
 import { Loader2 } from "lucide-react";
-import ThemeToggle from "@/components/ThemeToggle";
 
 const DEFAULT_LOCATION = {
   id: 1,
@@ -61,9 +60,7 @@ const Index = () => {
         <header className="flex items-center justify-between mb-6">
           <div className="flex-1" />
           <SearchBar onLocationSelect={handleLocationSelect} />
-          <div className="flex-1 flex justify-end">
-            <ThemeToggle />
-          </div>
+          <div className="flex-1" />
         </header>
 
         <main className="mt-12">
