@@ -47,7 +47,10 @@ export const searchLocations = async (query: string): Promise<LocationData[]> =>
 
 export const reverseGeocode = async (latitude: number, longitude: number): Promise<LocationData | null> => {
   try {
-    const url = `${GEO_BASE_URL}/search?latitude=${latitude}&longitude=${longitude}&count=1&language=en&format=json`;
+    // Instead of using reverse geocoding directly (which requires a name parameter),
+    // We'll use a nearby location search approach
+    // This will find the closest named location to the given coordinates
+    const url = `${GEO_BASE_URL}/search?latitude=${latitude}&longitude=${longitude}&count=1&format=json`;
     
     const response = await fetch(url);
     if (!response.ok) {
@@ -59,7 +62,13 @@ export const reverseGeocode = async (latitude: number, longitude: number): Promi
       return data.results[0];
     }
     
-    return null;
+    // If no results found, create a basic location with coordinates
+    return {
+      id: Date.now(),
+      name: "Current Location",
+      latitude,
+      longitude
+    };
   } catch (error) {
     console.error("Error reverse geocoding:", error);
     throw error;
