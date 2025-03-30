@@ -27,53 +27,64 @@ const CurrentWeather = ({ data, locationName }: CurrentWeatherProps) => {
   };
 
   return (
-    <div className="glass-card rounded-3xl overflow-hidden mb-6">
-      <div className="p-6 text-white">
-        <div className="flex justify-between items-start mb-6">
-          <div>
+    <div className="glass-card rounded-3xl overflow-hidden mb-6 shadow-xl border-[1px] border-white/25">
+      <div className="p-6 text-white bg-gradient-to-b from-transparent to-black/10">
+        <div className="flex justify-between items-start mb-8">
+          <div className="animate-fade-in">
             <h1 className="text-3xl font-bold mb-1">{locationName}</h1>
-            <p className="text-white/80 text-sm">
-              {formatCoordinates(data.latitude, data.longitude)} • {formatTime()}
+            <p className="text-white/80 text-sm flex items-center">
+              <span className="inline-flex items-center bg-white/10 px-2 py-1 rounded-full mr-2">
+                <Cloud size={12} className="mr-1 opacity-70" />
+                {formatCoordinates(data.latitude, data.longitude)}
+              </span>
+              <span className="inline-flex items-center bg-white/10 px-2 py-1 rounded-full">
+                <SunMedium size={12} className="mr-1 opacity-70" />
+                {formatTime()}
+              </span>
             </p>
           </div>
-          <div className="text-right">
-            <div className="text-5xl font-bold">{formatTemperature(current.temperature_2m)}</div>
-            <p className="text-white/80 text-sm">Feels like {formatTemperature(current.apparent_temperature)}</p>
+          <div className="text-right animate-fade-in">
+            <div className="text-6xl font-bold bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent">
+              {formatTemperature(current.temperature_2m)}
+            </div>
+            <p className="text-white/80 text-sm">
+              Feels like {formatTemperature(current.apparent_temperature)}
+            </p>
           </div>
         </div>
         
-        <div className="flex items-center mb-6">
-          <WeatherIcon className="mr-2" size={24} />
-          <span className="text-lg">{weather.description}</span>
+        <div className="flex items-center mb-8 p-3 bg-white/5 rounded-2xl border border-white/10 shadow-inner">
+          <WeatherIcon className="mr-3 text-white/90" size={36} />
+          <span className="text-xl font-medium">{weather.description}</span>
         </div>
         
-        <div className="grid grid-cols-2 gap-3">
-          <div className="glass-panel p-4 flex flex-col items-center">
-            <Wind className="mb-1 text-white/80" size={20} />
-            <p className="text-lg font-medium">{Math.round(current.wind_speed_10m)} km/h</p>
-            <p className="text-xs text-white/70">{getWindDirection(current.wind_direction_10m)}</p>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="glass-panel p-4 flex flex-col items-center hover:bg-white/5 transition-all duration-300 transform hover:scale-[1.02]">
+            <Wind className="mb-2 text-white/80" size={22} />
+            <p className="text-xl font-medium">{Math.round(current.wind_speed_10m)} km/h</p>
+            <p className="text-xs text-white/70 mt-1">{getWindDirection(current.wind_direction_10m)}</p>
           </div>
           
-          <div className="glass-panel p-4 flex flex-col items-center">
-            <Droplets className="mb-1 text-white/80" size={20} />
-            <p className="text-lg font-medium">{current.relative_humidity_2m}%</p>
-            <p className="text-xs text-white/70">Humidity</p>
+          <div className="glass-panel p-4 flex flex-col items-center hover:bg-white/5 transition-all duration-300 transform hover:scale-[1.02]">
+            <Droplets className="mb-2 text-white/80" size={22} />
+            <p className="text-xl font-medium">{current.relative_humidity_2m}%</p>
+            <p className="text-xs text-white/70 mt-1">Humidity</p>
           </div>
           
-          <div className="glass-panel p-4 flex flex-col items-center">
-            <Umbrella className="mb-1 text-white/80" size={20} />
-            <p className="text-lg font-medium">{Math.round(current.precipitation * 100)}%</p>
-            <p className="text-xs text-white/70">Precipitation</p>
+          <div className="glass-panel p-4 flex flex-col items-center hover:bg-white/5 transition-all duration-300 transform hover:scale-[1.02]">
+            <Umbrella className="mb-2 text-white/80" size={22} />
+            <p className="text-xl font-medium">{Math.round(current.precipitation * 100)}%</p>
+            <p className="text-xs text-white/70 mt-1">Precipitation</p>
           </div>
           
-          <div className="glass-panel p-4 flex flex-col items-center">
-            <SunMedium className="mb-1 text-white/80" size={20} />
-            <p className="text-lg font-medium">Low</p>
-            <p className="text-xs text-white/70">UV Index</p>
+          <div className="glass-panel p-4 flex flex-col items-center hover:bg-white/5 transition-all duration-300 transform hover:scale-[1.02]">
+            <SunMedium className="mb-2 text-white/80" size={22} />
+            <p className="text-xl font-medium">Low</p>
+            <p className="text-xs text-white/70 mt-1">UV Index</p>
           </div>
         </div>
         
-        <div className="mt-6 text-sm text-white/70 text-center">
+        <div className="mt-8 text-sm text-white/70 text-center px-3 py-4 border-t border-white/10">
           <p>This scene captures the calm serenity of a {weather.description.toLowerCase()} day with a gentle breeze.</p>
         </div>
       </div>
