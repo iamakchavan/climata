@@ -8,6 +8,7 @@ import CurrentWeather from "@/components/CurrentWeather";
 import WeatherForecast from "@/components/WeatherForecast";
 import WeatherPlaceholder from "@/components/WeatherPlaceholder";
 import { Loader2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 const DEFAULT_LOCATION = {
   id: 1,
@@ -55,12 +56,13 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-weather-blue-light to-white">
-      <div className="container max-w-5xl px-4 py-8">
-        <header className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 pb-12">
+      <div className="container max-w-4xl px-4 py-8">
+        <header className="mb-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tighter mb-2">
             ClimaTracker
           </h1>
+          <p className="text-muted-foreground mb-6">Simple, elegant weather forecasts</p>
           <div className="flex justify-center mb-6">
             <SearchBar onLocationSelect={handleLocationSelect} />
           </div>
@@ -69,19 +71,21 @@ const Index = () => {
         <main>
           {isLoading ? (
             <div className="flex items-center justify-center p-12">
-              <Loader2 className="h-12 w-12 text-weather-blue animate-spin" />
+              <Loader2 className="h-8 w-8 text-primary animate-spin" />
             </div>
           ) : weatherData && location ? (
-            <>
-              <CurrentWeather data={weatherData} locationName={location.name} />
-              <WeatherForecast data={weatherData} />
-            </>
+            <Card className="rounded-xl shadow-sm border-0 overflow-hidden">
+              <div className="animate-fade-in">
+                <CurrentWeather data={weatherData} locationName={location.name} />
+                <WeatherForecast data={weatherData} />
+              </div>
+            </Card>
           ) : (
             <WeatherPlaceholder />
           )}
         </main>
 
-        <footer className="mt-12 text-center text-gray-500 text-sm">
+        <footer className="mt-12 text-center text-sm text-muted-foreground">
           <p>Powered by Open-Meteo API • {new Date().getFullYear()}</p>
         </footer>
       </div>
