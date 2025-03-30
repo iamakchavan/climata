@@ -44,3 +44,24 @@ export const searchLocations = async (query: string): Promise<LocationData[]> =>
     throw error;
   }
 };
+
+export const reverseGeocode = async (latitude: number, longitude: number): Promise<LocationData | null> => {
+  try {
+    const url = `${GEO_BASE_URL}/search?latitude=${latitude}&longitude=${longitude}&count=1&language=en&format=json`;
+    
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Failed to reverse geocode");
+    }
+    
+    const data = await response.json();
+    if (data.results && data.results.length > 0) {
+      return data.results[0];
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Error reverse geocoding:", error);
+    throw error;
+  }
+};
