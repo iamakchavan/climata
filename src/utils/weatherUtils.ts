@@ -1,4 +1,3 @@
-
 import { WeatherCodeInfo } from "@/types/weather";
 import { Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSnow, Sun, CloudSun } from "lucide-react";
 
@@ -72,6 +71,48 @@ export const getWeatherDescription = (code: number): WeatherCodeInfo => {
       return { code, description: "Thunderstorm with hail", icon: "stormy" };
     default:
       return { code, description: "Unknown", icon: "cloudy" };
+  }
+};
+
+export const getBackgroundClass = (weatherCode: number): string => {
+  const hour = new Date().getHours();
+  const isNightTime = hour < 6 || hour > 18; // Night time between 6PM and 6AM
+
+  // Override with night background during night hours
+  if (isNightTime) {
+    return "weather-night";
+  }
+
+  // WMO Weather interpretation codes
+  switch (true) {
+    // Clear sky
+    case weatherCode === 0:
+      return "weather-clear";
+    
+    // Partly cloudy, Cloudy, Overcast
+    case weatherCode >= 1 && weatherCode <= 3:
+      return "weather-cloudy";
+      
+    // Fog
+    case weatherCode >= 45 && weatherCode <= 49:
+      return "weather-fog";
+      
+    // Drizzle, Rain
+    case (weatherCode >= 50 && weatherCode <= 69) || 
+         (weatherCode >= 80 && weatherCode <= 82):
+      return "weather-rain";
+      
+    // Snow
+    case (weatherCode >= 70 && weatherCode <= 79) || 
+         (weatherCode >= 85 && weatherCode <= 86):
+      return "weather-snow";
+    
+    // Thunderstorm
+    case weatherCode >= 95 && weatherCode <= 99:
+      return "weather-rain";
+      
+    default:
+      return "weather-default";
   }
 };
 

@@ -9,6 +9,7 @@ import WeatherForecast from "@/components/WeatherForecast";
 import WeatherPlaceholder from "@/components/WeatherPlaceholder";
 import { Loader2 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import { getBackgroundClass } from "@/utils/weatherUtils";
 
 const DEFAULT_LOCATION = {
   id: 1,
@@ -55,8 +56,18 @@ const Index = () => {
     loadWeatherData(locationData);
   };
 
+  // Determine the background class based on current weather
+  const getBackgroundClassName = () => {
+    if (!weatherData || !weatherData.current) {
+      return "weather-background weather-default";
+    }
+    
+    const bgClass = getBackgroundClass(weatherData.current.weather_code);
+    return `weather-background ${bgClass}`;
+  };
+
   return (
-    <div className="weather-background">
+    <div className={getBackgroundClassName()}>
       <div className="container max-w-lg px-4 py-8 mx-auto">
         <header className="flex items-center justify-between mb-6">
           <div className="flex-1" />
