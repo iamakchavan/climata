@@ -1,4 +1,3 @@
-
 import { WeatherCodeInfo } from "@/types/weather";
 import { Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSnow, Sun, CloudSun } from "lucide-react";
 
@@ -93,4 +92,16 @@ export const getWindDirection = (degrees: number): string => {
   const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
   const index = Math.round(((degrees % 360) / 45)) % 8;
   return directions[index];
+};
+
+export const getRandomBackground = (): string => {
+    const backgrounds = [
+        '/back.jpg',
+        '/back1.png',
+        '/back2.png',
+        '/back3.jpg'
+    ];
+    
+    const randomIndex = Math.floor(Math.random() * backgrounds.length);
+    return backgrounds[randomIndex];
 };

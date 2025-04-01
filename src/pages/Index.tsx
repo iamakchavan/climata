@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { LocationData, WeatherData } from "@/types/weather";
 import { fetchWeatherData, reverseGeocode } from "@/services/weatherService";
+import { getRandomBackground } from "@/utils/weatherUtils";
 import SearchBar from "@/components/SearchBar";
 import CurrentWeather from "@/components/CurrentWeather";
 import WeatherForecast from "@/components/WeatherForecast";
@@ -22,6 +23,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [locationPermission, setLocationPermission] = useState<PermissionState | null>(null);
+  const [backgroundImage, setBackgroundImage] = useState(getRandomBackground());
   const { toast } = useToast();
 
   // Load weather data for the selected location
@@ -167,7 +169,10 @@ const Index = () => {
   };
 
   return (
-    <div className="weather-background">
+    <div 
+      className="min-h-screen bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
       <div className="container max-w-lg px-4 py-8 mx-auto">
         <header className="flex items-center justify-between mb-6">
           <div className="flex-1" />
